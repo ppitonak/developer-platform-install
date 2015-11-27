@@ -46,9 +46,7 @@
     "karma-electron-launcher": "0.0.5",
     "karma-jasmine": "^0.3.6",
     "karma-jspm": "^2.0.2",
-    "karma-phantomjs-launcher": "^0.2.1",
     "mocha": "^2.3.4",
-    "phantomjs": "^1.9.18",
     "rimraf": "^2.4.3",
     "run-sequence": "^1.1.4",
     "tmp": "0.0.28"
