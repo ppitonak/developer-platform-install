@@ -1,5 +1,7 @@
 // Karma configuration
 
+'use strict';
+
 module.exports = function(config) {
   config.set({
 
@@ -8,15 +10,14 @@ module.exports = function(config) {
 
     plugins: [
       'karma-babel-preprocessor',
-      'karma-chai',
+      'karma-electron-launcher',
       'karma-jspm',
-      'karma-mocha',
-      'karma-phantomjs-launcher'
+      'karma-jasmine',
     ],
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['chai', 'jspm', 'mocha'],
+    frameworks: ['jasmine', 'jspm'],
 
     // list of files / patterns to load in the browser
     files: [],
@@ -27,24 +28,39 @@ module.exports = function(config) {
     jspm: {
       config: 'browser/config.js',
       packages: 'browser/jspm_packages',
-      loadFiles: ['test/browser/*.js'],
+      loadFiles: ['test/browser/**/*.js'],
       serveFiles: [
         'browser/*.js',
         'browser/directives/*.js',
         'browser/model/*.js',
         'browser/pages/**/*.js',
-        'browser/services/*.js',
-      ]
+        'browser/services/*.js'
+      ],
+      paths: {
+        // 'github:*': 'browser/jspm_packages/github/*',
+        // 'npm:*': 'browser/jspm_packages/npm/*',
+        // 'test/browser/account*': 'test/browser/account*.js'
+      }
     },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'browser/directives/**/*.js': ['babel'],
+      'browser/model/**/*.js': ['babel'],
+      'browser/pages/**/*.js': ['babel'],
+      'browser/services/**/*.js': ['babel'],
       'browser/*.js': ['babel'],
-      'test/functional/**/*.js': ['babel']
+      'test/browser/**/*.js': ['babel']
     },
 
-    'babelPreprocessor': {
+    babelPreprocessor: {
+    },
+
+    // necessary because JSPM baseURL in package.json is set to
+    // a non-default value
+    proxies: {
+      '/base/jspm_packages/': '/base/browser/jspm_packages/'
     },
 
     // test results reporter to use
@@ -67,7 +83,12 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['Electron'],
+
+    electronOpts: {
+      width: 1000,
+      height: 650
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
