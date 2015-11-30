@@ -12,7 +12,7 @@ module.exports = function(config) {
       'karma-babel-preprocessor',
       'karma-electron-launcher',
       'karma-jspm',
-      'karma-jasmine',
+      'karma-jasmine'
     ],
 
     // frameworks to use
@@ -20,47 +20,47 @@ module.exports = function(config) {
     frameworks: ['jasmine', 'jspm'],
 
     // list of files / patterns to load in the browser
-    files: [],
+    files: [
+      { pattern: 'test/karma-shim.js', watched: true, included: true, served: true}
+    ],
 
     // list of files to exclude
     exclude: [],
 
     jspm: {
-      config: 'browser/config.js',
+      // can't use browser/config.js because of a bug in karma-jspm
+      // the file is copied in postinstall script
+      config: 'test/jspm-config.js',
       packages: 'browser/jspm_packages',
       loadFiles: ['test/browser/**/*.js'],
       serveFiles: [
         'browser/*.js',
-        'browser/directives/*.js',
-        'browser/model/*.js',
+        'browser/directives/**/*.js',
+        'browser/model/**/*.js',
         'browser/pages/**/*.js',
-        'browser/services/*.js'
+        'browser/services/**/*.js'
       ],
       paths: {
-        // 'github:*': 'browser/jspm_packages/github/*',
-        // 'npm:*': 'browser/jspm_packages/npm/*',
-        // 'test/browser/account*': 'test/browser/account*.js'
+        'github:*': 'browser/jspm_packages/github/*',
+        'npm:*': 'browser/jspm_packages/npm/*'
       }
     },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'browser/*.js': ['babel'],
       'browser/directives/**/*.js': ['babel'],
       'browser/model/**/*.js': ['babel'],
       'browser/pages/**/*.js': ['babel'],
       'browser/services/**/*.js': ['babel'],
-      'browser/*.js': ['babel'],
       'test/browser/**/*.js': ['babel']
     },
 
     babelPreprocessor: {
-    },
-
-    // necessary because JSPM baseURL in package.json is set to
-    // a non-default value
-    proxies: {
-      '/base/jspm_packages/': '/base/browser/jspm_packages/'
+      options: {
+        modules: 'system'
+      }
     },
 
     // test results reporter to use

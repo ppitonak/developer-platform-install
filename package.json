@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/redhat-developer-tooling/developer-platform-install#readme",
   "scripts": {
-    "postinstall": "jspm install --yes",
+    "postinstall": "jspm install --yes && cp browser/config.js test/jspm-config.js",
     "start": "gulp run",
     "generate": "gulp generate",
     "package": "gulp package",
