@@ -53,9 +53,9 @@
       "baseURL": "browser"
     },
     "dependencies": {
-      "angular": "github:angular/bower-angular@^1.4.7",
-      "angular-base64": "github:ninjatronic/angular-base64@^2.0.5",
-      "angular-ui-router": "github:angular-ui/ui-router@^0.2.15",
+      "angular": "npm:angular@1.4.7",
+      "angular-base64": "npm:angular-base64@2.0.5",
+      "angular-ui-router": "npm:angular-ui-router@0.2.15",
       "patternfly": "npm:patternfly@2.6.0"
     },
     "devDependencies": {
