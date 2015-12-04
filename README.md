@@ -3,6 +3,9 @@
 Red Hat Developer Platform Installer
 ====================================
 
+[![Build status](https://img.shields.io/travis/ppitonak/developer-platform-install.svg?style=flat-square)](https://travis-ci.org/ppitonak/developer-platform-install)
+[![Dependency Status](https://img.shields.io/david/ppitonak/developer-platform-install.svg?style=flat-square)](https://david-dm.org/ppitonak/developer-platform-install)
+
 Architecture
 ------------
 
@@ -24,7 +27,7 @@ In order to build the installer, you'll need to install some tools.
     ```
     npm install -g gulp jspm
     ```
-    
+
 6. Install all dependencies:
 
     ```
