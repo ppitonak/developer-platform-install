@@ -6,7 +6,7 @@ Red Hat Developer Platform Installer
 [![Build Status](https://travis-ci.org/redhat-developer-tooling/developer-platform-install.svg?branch=travis)](https://travis-ci.org/redhat-developer-tooling/developer-platform-install)
 
 Architecture
-------------
+--------------
 
 This installer is built on Windows using [Electron](http://electron.atom.io/).
 
