@@ -12,7 +12,8 @@ module.exports = function(config) {
       'karma-babel-preprocessor',
       'karma-electron-launcher',
       'karma-jspm',
-      'karma-jasmine'
+      'karma-jasmine',
+      'karma-ng-html2js-preprocessor'
     ],
 
     // frameworks to use
@@ -21,7 +22,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      { pattern: 'test/karma-shim.js', watched: true, included: true, served: true}
+      { pattern: 'test/karma-shim.js', watched: true, included: true, served: true },
+      'browser/directives/*.html'
     ],
 
     // list of files to exclude
@@ -38,13 +40,18 @@ module.exports = function(config) {
         'browser/directives/**/*.js',
         'browser/model/**/*.js',
         'browser/pages/**/*.js',
-        'browser/services/**/*.js'
+        'browser/services/**/*.js',
+        // 'browser/directives/**/*.html'
       ],
       paths: {
         'github:*': 'browser/jspm_packages/github/*',
         'npm:*': 'browser/jspm_packages/npm/*'
       }
     },
+
+    // proxies: {
+    //   'directives/': '/base/browser/directives/'
+    // },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -54,13 +61,40 @@ module.exports = function(config) {
       'browser/model/**/*.js': ['babel'],
       'browser/pages/**/*.js': ['babel'],
       'browser/services/**/*.js': ['babel'],
-      'test/browser/**/*.js': ['babel']
+      'test/browser/**/*.js': ['babel'],
+      'browser/directives/*.html': ['ng-html2js']
     },
 
     babelPreprocessor: {
       options: {
         modules: 'system'
       }
+    },
+
+    ngHtml2JsPreprocessor: {
+      // strip this from the file path
+      stripPrefix: 'browser/',
+      // stripSuffix: '.ext',
+      // prepend this to the
+      // prependPrefix: 'servedxx/',
+
+      // or define a custom transform function
+      // - cacheId returned is used to load template
+      //   module(cacheId) will return template at filepath
+      // cacheIdFromPath: function(filepath) {
+        // example strips 'public/' from anywhere in the path
+        // module(app/templates/template.html) => app/public/templates/template.html
+        // var cacheId = filepath.strip('public/', '');
+        // return cacheId;
+      // },
+
+      // - setting this option will create only a single module that contains templates
+      //   from all the files, so you can load them all with module('foo')
+      // - you may provide a function(htmlPath, originalPath) instead of a string
+      //   if you'd like to generate modules dynamically
+      //   htmlPath is a originalPath stripped and/or prepended
+      //   with all provided suffixes and prefixes
+      // moduleName: 'templates'
     },
 
     // test results reporter to use
