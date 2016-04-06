@@ -3,17 +3,16 @@
   <head>
     <title>Red Hat JBoss Developer Studio Platform</title>
 
-    <script src="jspm_packages/system.js"></script>
-    <script src="config.js"></script>
     <script>
-        System.import('./bootstrap');
+        require('babel-register');
+        require('./bootstrap');
     </script>
 
-    <link rel="stylesheet" href="jspm_packages/npm/patternfly@2.6.0/dist/css/patternfly.css">
-    <link rel="stylesheet" href="jspm_packages/npm/patternfly@2.6.0/dist/css/patternfly-additions.css">
+    <link rel="stylesheet" href="../node_modules/patternfly/dist/css/patternfly.css">
+    <link rel="stylesheet" href="../node_modules/patternfly/dist/css/patternfly-additions.css">
     <link rel="stylesheet" href="app.css">
   </head>
   <body class="container-fluid">
-    <ui-view></ui-view>
+    <ui-view>asdf</ui-view>
   </body>
 </html>

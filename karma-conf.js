@@ -11,7 +11,6 @@ module.exports = function(config) {
     plugins: [
       'karma-babel-preprocessor',
       'karma-electron-launcher',
-      'karma-jspm',
       'karma-jasmine',
       'karma-junit-reporter',
       'karma-ng-html2js-preprocessor'
@@ -19,41 +18,26 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine', 'jspm'],
+    frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
       'node_modules/jquery/dist/jquery.js',
-      'browser/jspm_packages/github/angular/bower-angular*/angular.js',
-      'browser/jspm_packages/npm/angular-mocks*/angular-mocks.js',
+      'browser/angular/angular.js',
+      'browser/angular-mocks/angular-mocks.js',
       { pattern: 'test/karma-shim.js', watched: true, included: true, served: true },
       'browser/directives/*.html',
-      'browser/pages/**/*.html'
+      'browser/pages/**/*.html',
+      'browser/*.js',
+      'browser/directives/**/*.js',
+      'browser/model/**/*.js',
+      'browser/pages/**/*.js',
+      'browser/services/**/*.js',
+      'test/browser/**/*.js'
     ],
 
     // list of files to exclude
     exclude: [],
-
-    jspm: {
-      // can't use browser/config.js because of a bug in karma-jspm
-      // the file is copied in postinstall script
-      config: 'test/jspm-config.js',
-      packages: 'browser/jspm_packages',
-      loadFiles: ['test/browser/**/*.js'],
-      serveFiles: [
-        'browser/*.js',
-        'browser/directives/**/*.js',
-        'browser/model/**/*.js',
-        'browser/pages/**/*.js',
-        'browser/services/**/*.js',
-        'browser/directives/**/*.html',
-        'browser/pages/**/*.html'
-      ],
-      paths: {
-        'github:*': 'browser/jspm_packages/github/*',
-        'npm:*': 'browser/jspm_packages/npm/*'
-      }
-    },
 
     // proxies: {
     //   'directives/': '/base/browser/directives/'
