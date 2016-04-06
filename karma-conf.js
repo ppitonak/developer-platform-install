@@ -23,16 +23,12 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/jquery/dist/jquery.js',
-      'browser/angular/angular.js',
-      'browser/angular-mocks/angular-mocks.js',
+      'node_modules/angular/angular.js',
+      'node_modules/angular-mocks/angular-mocks.js',
       { pattern: 'test/karma-shim.js', watched: true, included: true, served: true },
       'browser/directives/*.html',
       'browser/pages/**/*.html',
-      'browser/*.js',
-      'browser/directives/**/*.js',
-      'browser/model/**/*.js',
-      'browser/pages/**/*.js',
-      'browser/services/**/*.js',
+      'browser/**/!(bootstrap)*.js',
       'test/browser/**/*.js'
     ],
 
@@ -58,7 +54,8 @@ module.exports = function(config) {
 
     babelPreprocessor: {
       options: {
-        modules: 'system'
+        presets: ['es2015-node5']
+        // plugins: [ 'transform-es2015-modules-commonjs' ]
       }
     },
 
