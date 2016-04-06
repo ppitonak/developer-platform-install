@@ -33,7 +33,7 @@ module.exports = function(gulp) {
       })
       .pipe(mocha({
         recursive: true,
-        compilers: 'js:babel/register',
+        compilers: 'js:babel-register',
         env: {
           NODE_PATH: './browser'
         },
