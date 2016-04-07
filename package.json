@@ -40,7 +40,7 @@
     "unzip": "0.1.11"
   },
   "devDependencies": {
-    "angular-mocks": "1.5.0",
+    "angular-mocks": "1.5.3",
     "babel-core": "6.7.4",
     "babel-loader": "6.2.4",
     "babel-preset-es2015-node5": "1.2.0",
@@ -48,7 +48,7 @@
     "crypto": "0.0.3",
     "del": "2.2.0",
     "electron-packager": "6.0.0",
-    "electron-prebuilt": "0.37.3",
+    "electron-prebuilt": "0.37.5",
     "gulp": "3.9.1",
     "gulp-angular-protractor": "0.0.7",
     "gulp-babel": "6.1.2",
