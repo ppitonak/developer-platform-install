@@ -16,7 +16,8 @@ var gulp = require('gulp'),
     path = require('path'),
     minimatch = require('minimatch'),
     copy = require('gulp-copy'),
-    concat = require('gulp-concat');
+    concat = require('gulp-concat'),
+    mkdirp = require('mkdirp');
 
 require('./gulp-tasks/tests')(gulp);
 
@@ -29,6 +30,8 @@ var buildFolderRoot = 'dist/win/';
 var buildFileNamePrefix = artifactName + '-' + artifactPlatform + '-' + artifactArch;
 var buildFolder = buildFolderRoot + buildFileNamePrefix;
 var prefetchFolder = buildFolderRoot + buildFileNamePrefix; // or just use downloads/ folder to that a clean doesn't wipe out the downloads
+let buildFolderPath = path.resolve(buildFolderRoot);
+let configIcon = path.resolve(path.join(buildFolderPath, '..', '..', 'resources', artifactName + '.ico'));
 
 let zaRoot = path.resolve(buildFolderRoot);
 let zaZip = path.join(zaRoot, '7za920.zip');
@@ -38,6 +41,10 @@ let zaSfxExe = path.join(zaRoot, '7zS.exe');
 let zaExtra7z = path.join(zaRoot, '7z920_extra.7z');
 let rhZip = path.join(zaRoot, 'resource_hacker.zip');
 let rhExe = path.join(zaRoot, 'ResourceHacker.exe');
+let zaElectronPackage = path.join(zaRoot, artifactName + '-win32-x64');
+let configTxt = path.resolve(path.join(zaRoot, '..', '..', 'config.txt'));
+let bundled7z = path.join(zaRoot, artifactName +'-win32-x64.7z');
+let installerExe = path.join(zaRoot, artifactName + '-' + pjson.version + artifactType + '-installer.exe');
 
 gulp.task('transpile:app', function() {
   return gulp.src(['./main/*.es6.js'])
@@ -69,10 +76,12 @@ function createExecCallback(cb, quiet) {
   }
 }
 
+gulp.task('create-dist-win-dir', function(cb) {
+  return mkdirp(buildFolderPath, cb);
+})
+
 gulp.task('generate', ['transpile:app'], function(cb) {
   var electronVersion = pjson.devDependencies['electron-prebuilt'];
-  let buildFolderPath = path.resolve(buildFolderRoot);
-  let configIcon = path.resolve(path.join(buildFolderPath, '..', '..', 'resources', artifactName + '.ico'));
   var cmd = path.join('node_modules', '.bin') + path.sep + 'electron-packager . ' + artifactName + ' --platform=' + artifactPlatform + ' --arch=' + artifactArch;
   cmd += ' --version=' + electronVersion + ' --out="' + buildFolderPath + '" --overwrite --asar=true';
   cmd += ' --version-string.CompanyName="Red Hat, Inc."';
@@ -99,7 +108,7 @@ gulp.task('download-7zip', function() {
       .pipe(fs.createWriteStream(zaZip));
 });
 
-gulp.task('unzip-7zip', ['download-7zip'], function() {
+gulp.task('unzip-7zip', function() {
   return gulp.src(zaZip)
       .pipe(unzip({ filter : function(entry){ return minimatch(entry.path, "**/7za.exe") } }))
       .pipe(gulp.dest(buildFolderRoot));
@@ -110,70 +119,63 @@ gulp.task('download-7zip-extra', function() {
       .pipe(fs.createWriteStream(zaExtra7z));
 });
 
-gulp.task('unzip-7zip-extra', ['download-7zip-extra', 'unzip-7zip'], function(cb) {
+gulp.task('unzip-7zip-extra', function(cb) {
   let cmd = zaExe + ' e ' + zaExtra7z + ' -o' + zaRoot + ' -y ' + '7zS.sfx';
-  console.log(cmd);
-
-  return exec(cmd, createExecCallback(cb, true));
+  // console.log(cmd);
+  exec(cmd, createExecCallback(cb, true));
 });
 
-// download-7zip and download-7zip-extra are listed here only for easier understanding
-gulp.task('prepare-7zip', ['download-7zip', 'unzip-7zip', 'download-7zip-extra', 'unzip-7zip-extra']);
+gulp.task('download-resource-hacker', function() {
+  return request('http://www.angusj.com/resourcehacker/resource_hacker.zip')
+      .pipe(fs.createWriteStream(rhZip));
+});
 
-// Wrap electron-generated app to self extractring 7zip archive
-gulp.task('package', ['prepare-7zip', 'prepare-resource-hacker'], function (cb) {
+gulp.task('unzip-resource-hacker', function() {
+  return gulp.src(rhZip)
+      .pipe(unzip({ filter : function(entry){ return minimatch(entry.path, "**/ResourceHacker.*") } }))
+      .pipe(gulp.dest(buildFolderRoot));
+});
 
-  let zaElectronPackage = path.join(zaRoot, artifactName + '-win32-x64');
-  let configTxt = path.resolve(path.join(zaRoot, '..', '..', 'config.txt'));
-  let bundled7z = path.join(zaRoot, artifactName +'-win32-x64.7z');
-  let installerExe = path.join(zaRoot, artifactName + '-' + pjson.version + artifactType + '-installer.exe');
+gulp.task('prepare-tools', function(cb) {
+  runSequence(['download-7zip', 'download-7zip-extra', 'download-resource-hacker'],
+    ['unzip-7zip', 'unzip-resource-hacker'], 'unzip-7zip-extra', cb);
+});
 
-  console.log("Creating " + installerExe);
+// wrap electron-generated app to 7zip archive
+gulp.task('create-7zip-archive', function(cb) {
+  let packCmd = zaExe + ' a ' + bundled7z + ' ' + zaElectronPackage + path.sep + '*';
+  exec(packCmd, createExecCallback(cb, true));
+});
 
-  var packCmd = zaExe + ' a ' + bundled7z + ' ' + zaElectronPackage + path.sep + '*';
-  console.log(packCmd);
-  exec(packCmd, function (err, stdout, stderr) {
-    //console.log(stdout);
-    console.log(stderr);
-    if (!err) {
-      // compiling a .rc to .res doesn't work so have to do it by hand when the version in package.json changes
-      // var configRC = path.resolve(path.join(buildFolderRoot, '..', '..', 'resources', artifactName + '.rc')); // metadata including company info and copyright
-      var configRes = path.resolve(path.join(buildFolderRoot, '..', '..', 'resources', artifactName + '.res')); // resource including icon & metadata
-      // var resHackCompileCmd = rhExe + ' -compile ' + configRC + ", " + configRes;
-      // console.log(resHackCompileCmd);
-      // run ResourceHacker.exe to insert a new icon into the installer .exe
-      // exec(resHackCompileCmd, function (err, stdout, stderr) {
-        // console.log(stderr);
-        // if (!err) {
-      var resHackModifyCmd = rhExe + ' -modify ' + zaSfx + ', ' + zaSfxExe + ', ' + configRes + ", , , "; // trailing commas required here!
-      console.log(resHackModifyCmd);
+gulp.task('update-metadata', function(cb) {
+  // compiling a .rc to .res doesn't work so have to do it by hand when the version in package.json changes
+  // let configRC = path.resolve(path.join(buildFolderRoot, '..', '..', 'resources', artifactName + '.rc')); // metadataincluding company info and copyright
+  let configRes = path.resolve(path.join(buildFolderRoot, '..', '..', 'resources', artifactName + '.res')); // resource ncluding icon & metadata
+  // let resHackCompileCmd = rhExe + ' -compile ' + configRC + ", " + configRes;
+  // console.log(resHackCompileCmd);
+  // run ResourceHacker.exe to insert a new icon into the installer .exe
+  // exec(resHackCompileCmd, function (err, stdout, stderr) {
+  //   console.log(stderr);
+  //   if (!err) {
+  let resHackModifyCmd = rhExe + ' -modify ' + zaSfx + ', ' + zaSfxExe + ', ' + configRes + ", , , "; // trailing commasrequired here!
+  // console.log(resHackModifyCmd);
 
-      exec(resHackModifyCmd, function (err, stdout, stderr) {
-        // console.log(stdout);
-        console.log(stderr);
-        if (!err) {
+  exec(resHackModifyCmd, createExecCallback(cb, true));
+});
 
-              var packageCmd = 'copy /b ' + zaSfxExe + ' + ' + configTxt + ' + ' + bundled7z + ' ' + installerExe;
-              console.log(packageCmd);
+gulp.task('create-final-exe', function(cb) {
+  let packageCmd = 'copy /b ' + zaSfxExe + ' + ' + configTxt + ' + ' + bundled7z + ' ' + installerExe;
+  // console.log(packageCmd);
 
-              // run ResourceHacker.exe to insert a new icon into the installer .exe
-              exec(packageCmd, function (err, stdout, stderr) {
-                console.log(stderr);
-                console.log(stdout);
-                // ResourceHacker console log available in zaRoot + "/ResourceHacker.log"
-                if(!err) {
-                  createSHA256File(installerExe);
-                }
-                cb(err);
-              });
-        } else{
-          cb(err);
-        }
-      });
-    } else {
-      cb(err);
-    }
-  });
+  exec(packageCmd, createExecCallback(cb, true));
+});
+
+gulp.task('create-sha256sum-of-exe', function(cb) {
+  createSHA256File(installerExe, cb);
+});
+
+gulp.task('package', function(cb) {
+  runSequence('create-7zip-archive', 'update-metadata', 'create-final-exe', 'create-sha256sum-of-exe', cb);
 });
 
 // for a given filename, return the sha256sum
@@ -201,9 +203,15 @@ function getSHA256(filename, cb) {
 }
 
 // writes to {filename}.sha256, eg., 6441cde1821c93342e54474559dc6ff96d40baf39825a8cf57b9aad264093335 requirements.json
-function createSHA256File(filename) {
-  getSHA256(filename, function(hashstring) { fs.writeFileSync(filename + ".sha256", hashstring + " *" + path.parse(filename).base); })
-  return true;
+function createSHA256File(filename, cb) {
+  getSHA256(filename, function(hashstring) {
+    fs.writeFileSync(filename + ".sha256", hashstring + " *" + path.parse(filename).base);
+    if (cb) {
+      cb();
+    } else {
+      return true;
+    }
+  });
 }
 
 gulp.task('download-resource-hacker', function() {
@@ -211,39 +219,41 @@ gulp.task('download-resource-hacker', function() {
       .pipe(fs.createWriteStream(rhZip));
 });
 
-gulp.task('unzip-resource-hacker', ['download-resource-hacker'], function() {
+gulp.task('unzip-resource-hacker', function() {
   return gulp.src(rhZip)
       .pipe(unzip({ filter : function(entry){ return minimatch(entry.path, "**/ResourceHacker.*") } }))
       .pipe(gulp.dest(buildFolderRoot));
 });
 
-// download-resource-hacker and download-resource-hacker are listed here only for easier understanding
-gulp.task('prepare-resource-hacker', ['unzip-resource-hacker', 'download-resource-hacker']);
-
 // Create stub installer that will then download all the requirements
-gulp.task('package-simple', ['check-requirements'], function() {
-  return runSequence('clean', 'generate', 'package', 'cleanup');
+gulp.task('package-simple', function(cb) {
+  runSequence(['check-requirements', 'clean'], 'create-dist-win-dir', ['generate',
+    'prepare-tools'], 'package', 'cleanup', cb);
 });
 
   // Create bundled installer
-gulp.task('package-bundle', ['check-requirements'], function() {
-  return runSequence('clean', 'generate', 'prefetch', 'package', '7zip-cleanup');
+gulp.task('package-bundle', function(cb) {
+  runSequence(['check-requirements', 'clean'], 'create-dist-win-dir', ['generate',
+    'prepare-tools', 'prefetch'], 'package', 'cleanup', cb);
 });
 
 // Create both installers
-gulp.task('dist', ['check-requirements'], function() {
-  return runSequence('clean', 'generate', 'package', 'prefetch', 'package', 'cleanup');
+gulp.task('dist', function(cb) {
+  runSequence(['check-requirements', 'clean'], 'create-dist-win-dir', ['generate',
+    'prepare-tools'], 'package', 'prefetch', 'package', 'cleanup', cb);
 });
 
 gulp.task('7zip-cleanup', function() {
-    del([buildFolderRoot + 'DeveloperPlatformInstaller-w32-x64.7z', path.resolve(path.join(buildFolderRoot, '7z*'))], { force: false });
+  return del([buildFolderRoot + 'DeveloperPlatformInstaller-w32-x64.7z', path.resolve(path.join(buildFolderRoot, '7z*'))], { force: false });
 });
 
 gulp.task('resource-hacker-cleanup', function() {
-  del([path.resolve(path.join(buildFolderRoot, 'resource_hacker.zip')), path.resolve(path.join(buildFolderRoot, 'ResourceHacker.*'))], { force: false });
+  return del([path.resolve(path.join(buildFolderRoot, 'resource_hacker.zip')), path.resolve(path.join(buildFolderRoot, 'ResourceHacker.*'))], { force: false });
 });
 
-gulp.task('cleanup', ['7zip-cleanup', 'resource-hacker-cleanup']);
+gulp.task('cleanup', function(cb) {
+  runSequence(['7zip-cleanup', 'resource-hacker-cleanup'], cb);
+});
 
 gulp.task('test', function() {
   return runSequence('create-electron-symlink', 'unit-test', 'delete-electron-symlink', 'browser-test');
