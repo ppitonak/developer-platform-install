@@ -11,3 +11,4 @@ test/jspm-config.js
 xunit.xml
 browser-tests.xml
 requirements-cache/
+coverage
