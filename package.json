@@ -23,14 +23,13 @@
     "test": "gulp test",
     "unit-test": "gulp unit-test",
     "browser-test": "gulp browser-test",
-    "cover": "NODE_PATH=./browser istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --recursive test/unit",
+    "cover": "NODE_PATH=./browser istanbul cover _mocha -- --compilers js:babel-core/register --recursive test/unit",
     "ui-test": "gulp ui-test"
   },
   "dependencies": {
     "angular": "1.5.3",
     "angular-base64": "2.0.5",
     "angular-ui-router": "0.2.15",
-    "babel-register": "6.7.2",
     "fs-extra": "0.26.7",
     "glob": "7.0.3",
     "patternfly": "2.6.0",
@@ -42,7 +41,7 @@
   },
   "devDependencies": {
     "angular-mocks": "1.5.3",
-    "babel-core": "6.7.4",
+    "babel-core": "6.7.7",
     "babel-loader": "6.2.4",
     "babel-preset-node5": "11.0.2",
     "chai": "3.5.0",
