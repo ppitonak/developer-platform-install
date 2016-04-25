@@ -54,7 +54,7 @@ module.exports = function(config) {
 
     babelPreprocessor: {
       options: {
-        presets: ['es2015-node5']
+        presets: ['node5']
         // plugins: [ 'transform-es2015-modules-commonjs' ]
       }
     },
