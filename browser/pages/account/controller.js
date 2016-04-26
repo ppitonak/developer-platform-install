@@ -28,7 +28,7 @@ class AccountController {
     this.pdkVersion = pjson.version;
     this.isLoginBtnClicked = false;
   }
-  
+
   login() {
     this.authFailed = false;
     this.tandcNotSigned = false;
@@ -80,6 +80,7 @@ class AccountController {
   }
 }
 
+angular.module('devPlatInstaller').controller(AccountController.name, AccountController);
 AccountController.$inject = ['$state', '$http', '$base64', 'installerDataSvc'];
 
 export default AccountController;

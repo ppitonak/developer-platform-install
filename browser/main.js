@@ -3,11 +3,6 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
 import base64 from 'angular-base64';
-import acctCtrl from './pages/account/controller';
-import locCtrl from './pages/location/controller';
-import confCtrl from './pages/confirm/controller';
-import instCtrl from './pages/install/controller';
-import startCtrl from './pages/start/controller';
 import pathValidator from './directives/pathValidator';
 import progressBar from './directives/progressBar';
 import breadcrumb from './directives/breadcrumb';
@@ -21,11 +16,6 @@ import CDKInstall from './model/cdk';
 
 let mainModule =
       angular.module('devPlatInstaller', ['ui.router', 'base64'])
-          .controller(acctCtrl.name, acctCtrl)
-          .controller(locCtrl.name, locCtrl)
-          .controller(confCtrl.name, confCtrl)
-          .controller(instCtrl.name, instCtrl)
-          .controller(startCtrl.name, startCtrl)
           .factory('installerDataSvc', InstallerDataService.factory)
           .directive(progressBar.name, progressBar)
           .directive(breadcrumb.name, ['$state', breadcrumb])

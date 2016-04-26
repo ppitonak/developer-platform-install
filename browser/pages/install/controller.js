@@ -167,6 +167,7 @@ class ProgressState {
   }
 }
 
+angular.module('devPlatInstaller').controller(InstallController.name, InstallController);
 InstallController.$inject = ['$scope', '$timeout', 'installerDataSvc'];
 
 export default InstallController;
