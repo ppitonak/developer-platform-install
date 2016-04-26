@@ -39,4 +39,6 @@ function progressBar() {
   }
 }
 
+angular.module('devPlatInstaller').directive(progressBar.name, ['$state', progressBar]);
+
 export default progressBar;

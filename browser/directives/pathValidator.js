@@ -23,4 +23,6 @@ function pathValidator() {
   };
 }
 
+angular.module('devPlatInstaller').directive(pathValidator.name, ['$state', pathValidator]);
+
 export default pathValidator;

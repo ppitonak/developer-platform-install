@@ -27,4 +27,6 @@ function breadcrumb($state) {
   }
 }
 
+angular.module('devPlatInstaller').directive(breadcrumb.name, ['$state', breadcrumb]);
+
 export default breadcrumb;

@@ -3,9 +3,6 @@
 import angular from 'angular';
 import uiRouter from 'angular-ui-router';
 import base64 from 'angular-base64';
-import pathValidator from './directives/pathValidator';
-import progressBar from './directives/progressBar';
-import breadcrumb from './directives/breadcrumb';
 import InstallerDataService from './services/data';
 import VirtualBoxInstall from './model/virtualbox';
 import JdkInstall from './model/jdk-install';
@@ -17,9 +14,6 @@ import CDKInstall from './model/cdk';
 let mainModule =
       angular.module('devPlatInstaller', ['ui.router', 'base64'])
           .factory('installerDataSvc', InstallerDataService.factory)
-          .directive(progressBar.name, progressBar)
-          .directive(breadcrumb.name, ['$state', breadcrumb])
-          .directive(pathValidator.name, pathValidator)
           .config( ["$stateProvider", "$urlRouterProvider", ($stateProvider, $urlRouterProvider) => {
             $urlRouterProvider.otherwise('/account');
 
