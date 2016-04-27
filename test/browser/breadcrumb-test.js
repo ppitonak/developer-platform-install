@@ -6,7 +6,7 @@ import breadcrumb from 'browser/directives/breadcrumb';
 describe('breadcrumb directive', function() {
 
   //don't change the ordering of the names in this array
-    let names = ['Target Folder', 'Confirmation', 'Download & Install', 'Get Started'];
+  let names = ['Target Folder', 'Confirmation', 'Download & Install', 'Get Started'];
   let scope, element;
 
   //load main module

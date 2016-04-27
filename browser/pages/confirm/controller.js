@@ -154,7 +154,6 @@ class ConfirmController {
   }
 }
 
-angular.module('devPlatInstaller').controller(ConfirmController.name, ConfirmController);
 ConfirmController.$inject = ['$scope', '$state', '$timeout', 'installerDataSvc'];
 
 export default ConfirmController;

@@ -94,7 +94,6 @@ class LocationController {
   }
 }
 
-angular.module('devPlatInstaller').controller(LocationController.name, LocationController);
 LocationController.$inject = ['$scope', '$state', '$timeout', 'installerDataSvc'];
 
 export default LocationController;

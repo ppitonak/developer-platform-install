@@ -15,6 +15,15 @@ import breadcrumb from './directives/breadcrumb';
 // import CygwinInstall from './model/cygwin';
 // import CDKInstall from './model/cdk';
 
+angular.module('devPlatInstaller')
+  .controller(acctCtrl.name, acctCtrl)
+  .controller(locCtrl.name, locCtrl)
+  .controller(confCtrl.name, confCtrl)
+  .controller(instCtrl.name, instCtrl)
+  .controller(startCtrl.name, startCtrl);
+
 angular.element(document).ready(function() {
-  angular.bootstrap(document, [mainModule.name], { strictDi: true });
+  angular.bootstrap(document, [mainModule.name], {
+    strictDi: true
+  });
 });

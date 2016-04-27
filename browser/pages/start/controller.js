@@ -104,7 +104,6 @@ class StartController {
   }
 }
 
-angular.module('devPlatInstaller').controller(StartController.name, StartController);
 StartController.$inject = ['installerDataSvc'];
 
 export default StartController;

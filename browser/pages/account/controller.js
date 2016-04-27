@@ -80,7 +80,6 @@ class AccountController {
   }
 }
 
-angular.module('devPlatInstaller').controller(AccountController.name, AccountController);
 AccountController.$inject = ['$state', '$http', '$base64', 'installerDataSvc'];
 
 export default AccountController;
