@@ -47,7 +47,7 @@
     "crypto": "0.0.3",
     "del": "2.2.0",
     "electron-packager": "7.0.1",
-    "electron-prebuilt": "0.37.7",
+    "electron-prebuilt": "0.37.8",
     "gulp": "3.9.1",
     "gulp-angular-protractor": "0.0.7",
     "gulp-babel": "6.1.2",
