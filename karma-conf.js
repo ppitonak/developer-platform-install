@@ -28,7 +28,6 @@ module.exports = function(config) {
       { pattern: 'test/karma-shim.js', watched: true, included: true, served: true },
       'browser/directives/*.html',
       'browser/pages/**/*.html',
-      'browser/**/!(bootstrap)*.js',
       'test/browser/**/*.js'
     ],
 
@@ -37,16 +36,13 @@ module.exports = function(config) {
 
     // proxies: {
     //   'directives/': '/base/browser/directives/'
+    //   '/services5/': '/base/browser/services/',
+    //   '/services6/': 'http://localhost:9876/base/browser/services/'
     // },
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'browser/*.js': ['babel'],
-      'browser/directives/**/*.js': ['babel'],
-      'browser/model/**/*.js': ['babel'],
-      'browser/pages/**/*.js': ['babel'],
-      'browser/services/**/*.js': ['babel'],
       'test/browser/**/*.js': ['babel'],
       'browser/directives/*.html': ['ng-html2js'],
       'browser/pages/**/*.html': ['ng-html2js']
