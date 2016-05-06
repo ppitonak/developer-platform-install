@@ -43,7 +43,8 @@ class Util {
           reject(err);
         } else {
           for (var i = 0; i < fileNames.length; i++) {
-            if(!files.includes(fileNames[i])) {
+            // Babel can't traspile 'includes' on function parameters
+            if(files.indexOf(fileNames[i]) < 0) {
               reject(folder + ' does not contain ' + fileNames[i]);
               return;
             }
