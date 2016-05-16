@@ -12,7 +12,7 @@ import VagrantInstall from './vagrant';
 import Installer from './helpers/installer';
 
 class CDKInstall extends InstallableItem {
-  constructor(installerDataSvc, $timeout, cdkUrl, cdkBoxUrl, ocUrl, pscpUrl, installFile, targetFolderName) {
+  constructor(installerDataSvc, $timeout, cdkUrl, cdkBoxUrl, ocUrl, installFile, targetFolderName) {
     super('cdk',
           'Red Hat Container Development Kit',
           '2.0',
@@ -26,7 +26,6 @@ class CDKInstall extends InstallableItem {
     this.$timeout = $timeout;
     this.cdkBoxUrl = cdkBoxUrl;
     this.ocUrl = ocUrl;
-    this.pscpUrl = pscpUrl;
 
     this.cdkFileName = 'cdk.zip';
     this.cdkDownloadedFile = path.join(this.installerDataSvc.tempDir(), this.cdkFileName);
@@ -37,9 +36,6 @@ class CDKInstall extends InstallableItem {
 
     this.ocFileName = 'oc.zip';
     this.ocDownloadedFile = path.join(this.installerDataSvc.tempDir(),   this.ocFileName);
-
-    this.pscpFileName = 'pscp.exe';
-    this.pscpDownloadedFile = path.join(this.installerDataSvc.tempDir(), this.pscpFileName);
 
     this.pscpPathScript = path.join(this.installerDataSvc.tempDir(), 'set-pscp-path.ps1');
 
@@ -61,19 +57,19 @@ class CDKInstall extends InstallableItem {
 
     let downloadSize = 869598013;
 
-    let totalDownloads = 4;
+    let totalDownloads = 3;
 
-    let downloader = new Downloader(progress, success, failure, downloadSize, totalDownloads);
+    this.downloader = new Downloader(progress, success, failure, downloadSize, totalDownloads);
     let username = this.installerDataSvc.getUsername(),
         password = this.installerDataSvc.getPassword();
 
     if(!fs.existsSync(path.join(this.downloads, this.boxName))) {
       let cdkBoxWriteStream = fs.createWriteStream(this.cdkBoxDownloadedFile);
-      downloader.setWriteStream(cdkBoxWriteStream);
-      downloader.download(this.cdkBoxUrl);
+      this.downloader.setWriteStream(cdkBoxWriteStream);
+      this.downloader.download(this.cdkBoxUrl);
     } else {
       this.cdkBoxDownloadedFile = path.join(this.downloads, this.boxName);
-      downloader.closeHandler();
+      this.downloader.closeHandler();
     }
 
     if(!fs.existsSync(path.join(this.downloads, this.cdkFileName))) {
@@ -84,24 +80,15 @@ class CDKInstall extends InstallableItem {
       //     rejectUnauthorized: false
       //   }, username, password);
       let cdkWriteStream = fs.createWriteStream(this.cdkDownloadedFile);
-      downloader.setWriteStream(cdkWriteStream);
-      downloader.downloadAuth
+      this.downloader.setWriteStream(cdkWriteStream);
+      this.downloader.downloadAuth
       ({
         url: this.getDownloadUrl(),
         rejectUnauthorized: false
       }, username, password);
     } else {
       this.cdkDownloadedFile = path.join(this.downloads, this.cdkFileName);
-      downloader.closeHandler();
-    }
-
-    if(!fs.existsSync(path.join(this.downloads, this.pscpFileName))) {
-      let pscpWriteStream = fs.createWriteStream(this.pscpDownloadedFile);
-      downloader.setWriteStream(pscpWriteStream);
-      downloader.download(this.pscpUrl);
-    } else {
-      this.pscpDownloadedFile = path.join(this.downloads, this.pscpFileName);
-      downloader.closeHandler();
+      this.downloader.closeHandler();
     }
 
     if(!fs.existsSync(path.join(this.downloads, this.ocFileName))) {
@@ -109,17 +96,17 @@ class CDKInstall extends InstallableItem {
       if(!this.ocUrl.endsWith('.zip')) {
         request(this.ocUrl,(err,rsp,body) => {
           var fname = body.match(/openshift-origin-client-tools-v\w(\.\w){1,2}-\w{1,3}-\w{8}-\w{7}-windows\.zip/)[0];
-          downloader.setWriteStream(ocWriteStream);
+          this.downloader.setWriteStream(ocWriteStream);
           this.ocUrl=this.ocUrl.concat(fname);
-          downloader.download(this.ocUrl);
+          this.downloader.download(this.ocUrl);
         });
       } else {
-        downloader.setWriteStream(ocWriteStream);
-        downloader.download(this.ocUrl);
+        this.downloader.setWriteStream(ocWriteStream);
+        this.downloader.download(this.ocUrl);
       }
     } else {
       this.ocDownloadedFile = path.join(this.downloads, this.ocFileName);
-      downloader.closeHandler();
+      this.downloader.closeHandler();
     }
   }
 
@@ -165,7 +152,6 @@ class CDKInstall extends InstallableItem {
     installer.unzip(this.cdkDownloadedFile, this.installerDataSvc.installDir())
     .then((result) => { return installer.unzip(this.ocDownloadedFile, this.installerDataSvc.ocDir(), result); })
     .then((result) => { return installer.copyFile(this.cdkBoxDownloadedFile, path.join(this.installerDataSvc.cdkBoxDir(), this.boxName), result); })
-    .then((result) => { return installer.copyFile(this.pscpDownloadedFile, path.join(this.installerDataSvc.ocDir(), 'pscp.exe'), result); })
     .then((result) => { return installer.writeFile(this.pscpPathScript, data, result); })
     .then((result) => { return installer.writeFile(this.installerDataSvc.cdkMarker(), markerContent, result); })
     .then((result) => { return installer.execFile('powershell', opts, result); })
