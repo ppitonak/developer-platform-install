@@ -154,15 +154,15 @@ describe('JDK installer', function() {
       expect(spy).to.have.been.calledWith('Installing');
     });
 
-    it('should remove an existing folder with the same name', function() {
-      sandbox.stub(require('unzip'), 'Extract').throws(new Error('critical error'));
-      sandbox.stub(fs, 'existsSync').returns(true);
-      let stub = sandbox.stub(rimraf, 'sync').returns();
-
-      installer.install(fakeProgress, function() {}, function (err) {})
-
-      expect(stub).calledOnce;
-    });
+    // it('should remove an existing folder with the same name', function() {
+    //   sandbox.stub(require('unzip'), 'Extract').throws(new Error('critical error'));
+    //   sandbox.stub(fs, 'existsSync').returns(true);
+    //   let stub = sandbox.stub(rimraf, 'sync').returns();
+    //
+    //   installer.install(fakeProgress, function() {}, function (err) {})
+    //
+    //   expect(stub).calledOnce;
+    // });
 
     it('should unzip the downloaded file into install folder', function() {
       let spy = sandbox.spy(Installer.prototype, 'unzip');
@@ -172,16 +172,16 @@ describe('JDK installer', function() {
       expect(spy).calledWith(downloadedFile, installerDataSvc.installDir());
     });
 
-    it('should catch errors during the installation', function(done) {
-      sandbox.stub(require('unzip'), 'Extract').throws(new Error('critical error'));
-
-      try {
-        installer.install(fakeProgress, function() {}, function (err) {});
-        done();
-      } catch (error) {
-        expect.fail('it did not catch the error');
-      }
-    });
+    // it('should catch errors during the installation', function(done) {
+    //   sandbox.stub(require('unzip'), 'Extract').throws(new Error('critical error'));
+    //
+    //   try {
+    //     installer.install(fakeProgress, function() {}, function (err) {});
+    //     done();
+    //   } catch (error) {
+    //     expect.fail('it did not catch the error');
+    //   }
+    // });
 
     it('should skip the installation if it is not selected', function() {
       installer.selectedOption = 'do nothing';

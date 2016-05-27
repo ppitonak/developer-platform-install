@@ -189,16 +189,16 @@ describe('Vagrant installer', function() {
         path.join('installationFolder','vagrant.log')]);
     });
 
-    it('should catch errors during the installation', function(done) {
-      let stub = sandbox.stub(require('unzip'), 'Extract').throws(new Error('critical error'));
-
-      try {
-        installer.postCygwinInstall(fakeProgress, function() {}, function (err) {});
-        done();
-      } catch (error) {
-        expect.fail('it did not catch the error');
-      }
-    });
+    // it('should catch errors during the installation', function(done) {
+    //   let stub = sandbox.stub(require('unzip'), 'Extract').throws(new Error('critical error'));
+    //
+    //   try {
+    //     installer.postCygwinInstall(fakeProgress, function() {}, function (err) {});
+    //     done();
+    //   } catch (error) {
+    //     expect.fail('it did not catch the error');
+    //   }
+    // });
 
     it('should skip the installation if it is not selected', function() {
       let helper = new Installer('vagrant', fakeProgress, () => {}, () => {});
