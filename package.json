@@ -41,12 +41,12 @@
   },
   "devDependencies": {
     "angular-mocks": "1.5.5",
-    "babel-core": "6.8.0",
+    "babel-core": "6.9.0",
     "babel-preset-node5": "11.1.0",
     "chai": "3.5.0",
     "crypto": "0.0.3",
     "del": "2.2.0",
-    "electron-packager": "7.0.1",
+    "electron-packager": "7.0.2",
     "electron-prebuilt": "0.37.8",
     "gulp": "3.9.1",
     "gulp-angular-protractor": "0.1.1",
@@ -62,7 +62,7 @@
     "istanbul": "1.0.0-alpha.2",
     "jasmine-core": "2.4.1",
     "jasmine-reporters": "2.1.1",
-    "jquery": "2.2.3",
+    "jquery": "2.2.4",
     "karma": "0.13.22",
     "karma-babel-preprocessor": "6.0.1",
     "karma-electron-launcher": "0.1.0",
@@ -71,15 +71,15 @@
     "karma-ng-html2js-preprocessor": "1.0.0",
     "minimatch": "3.0.0",
     "mkdirp": "0.5.1",
-    "mocha": "2.4.5",
+    "mocha": "2.5.3",
     "mock-fs": "3.9.0",
     "protractor": "3.3.0",
-    "run-sequence": "1.1.5",
+    "run-sequence": "1.2.1",
     "sinon": "1.17.4",
     "sinon-as-promised": "4.0.0",
     "sinon-chai": "2.8.0",
     "tmp": "0.0.28",
     "xunit-file": "0.0.9",
-    "yargs": "4.7.0"
+    "yargs": "4.7.1"
   }
 }
