@@ -22,7 +22,9 @@
     "dist": "gulp dist",
     "test": "gulp test",
     "ui-test": "gulp ui-test",
-    "system-test": "gulp system-test"
+    "system-test": "gulp system-test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "angular": "1.5.8",
@@ -36,7 +38,8 @@
     "request": "2.75.0",
     "rimraf": "2.5.4",
     "semver": "5.3.0",
-    "unzip": "0.1.11"
+    "unzip": "0.1.11",
+    "snyk": "^1.19.1"
   },
   "devDependencies": {
     "babel-core": "6.17.0",
@@ -79,5 +82,6 @@
     "tmp": "0.0.29",
     "xunit-file": "1.0.0",
     "yargs": "6.0.0"
-  }
+  },
+  "snyk": true
 }
