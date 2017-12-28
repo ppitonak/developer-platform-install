@@ -31,7 +31,7 @@
     "eslint": "./node_modules/.bin/eslint browser main test"
   },
   "dependencies": {
-    "angular": "1.6.0",
+    "angular": "1.6.7",
     "angular-base64": "2.0.5",
     "angular-messages": "1.6.0",
     "angular-ui-router": "0.3.2",
